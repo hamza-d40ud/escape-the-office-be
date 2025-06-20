@@ -14,7 +14,6 @@ services:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
       LOG_LEVEL: ${LOG_LEVEL:-info}
-      LOKI_HOST: http://loki:3100
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       LOGIN_JWT_EXPIRES_SECONDS: ${LOGIN_JWT_EXPIRES_SECONDS}
       OTP_JWT_EXPIRES_SECONDS: ${OTP_JWT_EXPIRES_SECONDS}
@@ -34,8 +33,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      loki:
-        condition: service_started
   postgres:
     image: postgres:17.4
     container_name: eto_db
@@ -56,45 +53,11 @@ services:
       timeout: 5s
       retries: 5
 
-  loki:
-    image: grafana/loki:2.9.0
-    container_name: eto_loki
-    ports:
-      - "3100:3100"
-    command: -config.file=/etc/loki/local-config.yaml
-    volumes:
-      - loki_data:/loki
-      - ./loki-config.yaml:/etc/loki/local-config.yaml
-    user: "10001:10001"
-    restart: unless-stopped
-    networks:
-      - network
-
-  grafana:
-    image: grafana/grafana:10.2.0
-    container_name: eto_grafana
-    ports:
-      - "3001:3000"
-    environment:
-      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
-      - GF_USERS_ALLOW_SIGN_UP=false
-      - GF_INSTALL_PLUGINS=grafana-piechart-panel
-    volumes:
-      - grafana_data:/var/lib/grafana
-    depends_on:
-      - loki
-    restart: unless-stopped
-    networks:
-      - network
-
 volumes:
   db:
   assets:
   backend:
   logs:
-  loki_data:
-  grafana_data:
 
 networks:
   network:
