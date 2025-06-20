@@ -33,8 +33,8 @@ for (const dir of asset_dirs) {
         fs.mkdirSync(dir_path, { recursive: true });
     }
 }
-const sslKeyPath = '~/root/ssl/server.key';
-const sslCertPath = '~/root/ssl/server.crt';
+const sslKeyPath = '../ssl/server.key';
+const sslCertPath = '../ssl/server.crt';
 
 // Load SSL credentials
 const sslOptions = {
