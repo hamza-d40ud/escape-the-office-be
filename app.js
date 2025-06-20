@@ -2,6 +2,7 @@ import express from 'express';
 import basicAuth from 'express-basic-auth';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import https from 'https'; // <-- Use HTTPS instead of HTTP
 import http from 'http';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpecs from './docs/swagger/index.js';
@@ -32,9 +33,16 @@ for (const dir of asset_dirs) {
         fs.mkdirSync(dir_path, { recursive: true });
     }
 }
+const sslKeyPath = '/root/ssl/server.key';
+const sslCertPath = '/root/ssl/server.crt';
 
+// Load SSL credentials
+const sslOptions = {
+  key: fs.readFileSync(sslKeyPath),
+  cert: fs.readFileSync(sslCertPath),
+};
 const app = express();
-const server = http.createServer(app);
+const server = https.createServer(sslOptions, app);
 
 app.use(cors());
 app.use(express.json());
