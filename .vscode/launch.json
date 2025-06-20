@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Docker Node Debug",
+        "type": "node",
+        "request": "attach",
+        "address": "localhost",
+        "port": 9229,
+        "restart": true,
+        "localRoot": "${workspaceFolder}",
+        "remoteRoot": "/app"
+      }
+    ]
+  }
+  
